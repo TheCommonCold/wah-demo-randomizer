@@ -36,5 +36,29 @@ export const getMessages = async ({
     `${Routes.channelMessages(channel)}?limit=100`,
   )) as DiscordMessage[];
 
-  return messages.filter((message) => new Date(message.timestamp) > dateLimit);
+  const limitedMessages = messages.filter(
+    (message) => new Date(message.timestamp) > dateLimit,
+  );
+
+  const concatenatedMessages = limitedMessages.reduce(
+    (acc, message) => {
+      if (acc[message.author.username]) {
+        acc[message.author.username] = {
+          ...acc[message.author.username],
+          content:
+            acc[message.author.username].content + "\n" + message.content,
+        };
+      } else {
+        acc[message.author.username] = message;
+      }
+      return acc;
+    },
+    {} as Record<string, DiscordMessage>,
+  );
+
+  const result = Object.values(concatenatedMessages);
+  result.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
+  return result;
 };

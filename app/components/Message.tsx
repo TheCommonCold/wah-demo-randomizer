@@ -8,10 +8,11 @@ import { useState } from "react";
 import ConfirmDialog from "./Dialog";
 import { useLocalStorage } from "../context/localStorageContext";
 
-const Message: React.FC<{ message: DiscordMessage; isPremium: boolean }> = ({
-  message,
-  isPremium,
-}) => {
+const Message: React.FC<{
+  message: DiscordMessage;
+  isPremium: boolean;
+  showFullLink?: boolean;
+}> = ({ message, isPremium, showFullLink = false }) => {
   const { markSongAsUnseen } = useLocalStorage();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,7 +28,9 @@ const Message: React.FC<{ message: DiscordMessage; isPremium: boolean }> = ({
           rel="noopener noreferrer"
           className="text-blue-300"
         >
-          <p className=" truncate">{part}</p>
+          <p style={{ wordBreak: "break-all" }}>
+            {showFullLink ? part : "Link"}
+          </p>
         </a>
       );
     } else {

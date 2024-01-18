@@ -86,6 +86,7 @@ function Home() {
                 <Message
                   message={storedData.pickedMessage}
                   isPremium={storedData.pickedMessage.isPremium}
+                  showFullLink={true}
                 />
               </div>
             )}
