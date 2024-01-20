@@ -1,13 +1,16 @@
 import React from "react";
-import FreeQueue from "./FreeQueue";
-import PremiumQueue from "./PremiumQueue";
 import { PremiumAndFreeMessages } from "../api/messages/route";
+import Queue from "./Queue";
 
 const Queues = ({ freeDemos, premiumDemos }: PremiumAndFreeMessages) => {
   return (
     <div className="flex flex-row justify-center space-x-10">
-      <FreeQueue messages={freeDemos} />
-      <PremiumQueue messages={premiumDemos} />
+      <div className="w-1/2">
+        <Queue messages={freeDemos} isPremium={false} />
+      </div>
+      <div className="w-1/2">
+        <Queue messages={premiumDemos} isPremium={true} />
+      </div>
     </div>
   );
 };

@@ -61,7 +61,7 @@ const Message: React.FC<{
 
   return (
     <div
-      className={`w-full max-w-md relative mb-4 p-4 bg-gray-800 rounded-lg ${message.seen ? "bg-slate-800" : isPremium ? "border-blue-500 border-2 rounded-xl" : "border-slate-700 border-2 rounded-xl"}`}
+      className={`w-full max-w-[48rem] relative mb-4 p-4 bg-gray-800 rounded-lg ${message.seen ? "bg-slate-800" : isPremium ? "border-primary border-2 rounded-xl" : "border-slate-700 border-2 rounded-xl"}`}
     >
       <ConfirmDialog
         isOpen={isOpen}
@@ -92,7 +92,7 @@ const Message: React.FC<{
         </span>
 
         <span
-          className={`font-semibold ${message.seen ? "text-slate-600" : isPremium ? "text-blue-400" : "text-white"}`}
+          className={`font-semibold ${message.seen ? "text-slate-600" : isPremium ? "text-primary" : "text-white"}`}
         >
           {message.author.global_name ?? message.author.username}
         </span>

@@ -29,7 +29,7 @@ body {
 .rhap_container {
   margin-top: 1rem;;
   background-color:  rgb(31 41 55) !important;
-  border: 3px solid rgb(100 116 139)!important;
+  border: 3px solid rgb(148 163 184)!important;
   border-radius: 1rem !important;
 }
 
@@ -39,7 +39,7 @@ body {
 .rhap_progress-bar,
 .rhap_volume-bar,
 .rhap_repeat-button {
-  color: rgb(100 116 139)!important;
+  color: rgb(148 163 184)!important;
 }
 
 .rhap_button-clear {
@@ -47,25 +47,25 @@ body {
 }
 
 .rhap_progress-bar {
-  background-color: rgb(100 116 139)!important;
+  background-color: rgb(148 163 184)!important;
 }
 
 .rhap_progress-filled {
-  background-color: rgb(200 200 200)!important;
+  background-color: rgb(240 240 240)!important;
 }
 
 .rhap_progress-indicator{
-  background-color: rgb(200 200 200)!important;
+  background-color: rgb(240 240 240)!important;
 }
 
 .rhap_volume-bar {
-  background-color: rgb(100 116 139)!important;
+  background-color: rgb(148 163 184)!important;
 }
 
 .rhap_volume-indicator {
-  background-color: rgb(100 116 139)!important;
+  background-color: rgb(148 163 184)!important;
 }
 
 .rhap_download-progress {
-  background-color: rgb(150 150 150)!important;
+  background-color: rgb(200 200 200)!important;
 }
