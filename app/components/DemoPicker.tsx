@@ -10,7 +10,7 @@ const DemoPicker = ({
 }: {
   unseenDemos: PremiumAndFreeMessages;
 }) => {
-  const animationTime = 1750;
+  const animationTime = 1720;
 
   const {
     storedData,
@@ -19,13 +19,9 @@ const DemoPicker = ({
     setPickedMessage,
   } = useLocalStorage();
 
-  const [animate, setAnimate] = useState(true);
+  const [animate, setAnimate] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setAnimate(false);
-    }, animationTime);
-  }, []);
+  const audio = new Audio("/assets/wah_button.mp3");
 
   const getRandomMessage = (data: PremiumAndFreeMessages) => {
     const isItTimeForAFreeDemo =
@@ -64,6 +60,7 @@ const DemoPicker = ({
             className="cursor-pointer py-2 px-4 rounded"
             onClick={() => {
               setAnimate(true);
+              audio.play();
               setTimeout(() => {
                 getRandomMessage(unseenDemos);
                 setAnimate(false);
