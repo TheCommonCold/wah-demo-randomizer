@@ -43,16 +43,16 @@ const Queue = ({ messages, isPremium }: QueueProps) => {
 
   return (
     <div
-      className={`${isPremium ? "bg-secondary" : "bg-slate-700"} p-4 rounded-lg w-100 flex flex-col`}
+      className={`${isPremium ? "bg-secondary" : "bg-slate-700"} w-100 flex flex-col rounded-lg p-4`}
     >
       <button
-        className={`mb-5 ${isPremium ? "bg-primary hover:bg-blue-600" : "bg-slate-600 hover:bg-slate-500"} text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+        className={`mb-5 ${isPremium ? "bg-primary hover:bg-blue-600" : "bg-slate-600 hover:bg-slate-500"} focus:shadow-outline rounded px-4 py-2 font-bold text-white focus:outline-none`}
         onClick={getRandomMessage}
       >
         Random {isPremium ? "premium" : "free"} demo
       </button>
 
-      <h1 className="text-white text-xl font-bold">
+      <h1 className="text-xl font-bold text-white">
         <div className="flex items-center">
           {isPremium && (
             <Image

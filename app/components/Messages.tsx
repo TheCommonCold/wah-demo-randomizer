@@ -12,7 +12,9 @@ const Messages = ({ messages, isPremium }: DiscordMessagesProps) => {
   return (
     <div className="p-5">
       {messages.map((message) => (
-        <Message message={message} isPremium={isPremium} key={message.id} />
+        <div className=" mb-5" key={message.id}>
+          <Message message={message} isPremium={isPremium} />
+        </div>
       ))}
     </div>
   );

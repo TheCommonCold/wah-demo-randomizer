@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { PremiumAndFreeMessages } from "./api/messages/route";
 import Queues from "./components/Queues";
 import useAxios from "./hooks/useAxios";
@@ -9,6 +10,7 @@ import {
   useLocalStorage,
 } from "./context/localStorageContext";
 import DemoPicker from "./components/DemoPicker";
+import { env } from "process";
 
 function Home() {
   const { storedData } = useLocalStorage();
@@ -18,7 +20,17 @@ function Home() {
   });
 
   if (!discordMessages.data) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center pt-10">
+        <Image
+          className="rounded py-1"
+          src="/assets/wah_button.gif"
+          alt="wah logo"
+          width={160}
+          height={160}
+        />
+      </div>
+    );
   }
 
   const parsedDemos = {
@@ -38,8 +50,12 @@ function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen space-y-5 py-5">
+    <div className="flex min-h-screen flex-col items-center justify-center space-y-5 p-5">
       <DemoPicker unseenDemos={unseenDemos} />
+      <div className="pt-5">
+        Premium demos in a row: {storedData.premiumInARowCount}/
+        {env.PREMIUM_IN_A_ROW ?? 3}
+      </div>
       <Queues {...parsedDemos} />
       <ClearAllDialog />
     </div>

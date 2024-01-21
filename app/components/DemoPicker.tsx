@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { PremiumAndFreeMessages } from "../api/messages/route";
 import Message from "./Message";
@@ -19,9 +19,14 @@ const DemoPicker = ({
     setPickedMessage,
   } = useLocalStorage();
 
+  const [message, setMessage] = useState(storedData.pickedMessage);
   const [animate, setAnimate] = useState(false);
 
-  const audio = new Audio("/assets/wah_button.mp3");
+  const currMessage = useRef("");
+
+  useEffect(() => {
+    setMessage(storedData.pickedMessage);
+  }, [storedData.pickedMessage]);
 
   const getRandomMessage = (data: PremiumAndFreeMessages) => {
     const isItTimeForAFreeDemo =
@@ -51,44 +56,75 @@ const DemoPicker = ({
     markSongAsSeen(newPickedMessage.id);
   };
 
+  currMessage.current = message?.content ?? "";
+
+  const changeRandomCharImMessage = () => {
+    const string = currMessage.current;
+    const glitchChars = "`¡™£¢∞§¶•ªº–≠åß∂ƒ©˙∆˚¬…æ≈ç√∫˜µ≤≥÷/?░▒▓<>/".split("");
+    const randomCharInex = Math.floor(Math.random() * glitchChars.length);
+    const randomChar = glitchChars[randomCharInex];
+    const randomIndex = Math.floor(Math.random() * string.length);
+    const newString =
+      string.substring(0, randomIndex) +
+      randomChar +
+      string.substring(randomIndex + 1);
+
+    message
+      ? setMessage({
+          ...message,
+          content: newString,
+        })
+      : null;
+  };
+
   return (
-    <div>
+    <div className="h-[40rem]">
       {(unseenDemos.premiumDemos.length != 0 ||
         unseenDemos.freeDemos.length != 0) && (
-        <div className="flex flex-col items-center justify-center mb-5">
-          <Image
-            className="cursor-pointer py-2 px-4 rounded"
-            onClick={() => {
-              setAnimate(true);
-              audio.play();
-              setTimeout(() => {
-                getRandomMessage(unseenDemos);
-                setAnimate(false);
-              }, animationTime);
-            }}
-            src={
-              animate
-                ? "/assets/wah_button.gif"
-                : "/assets/wah_button_frame.gif"
-            }
-            alt="wah logo"
-            width={200}
-            height={200}
-          />
-          <div className="pt-5 text-lg">
-            Premium demos in a row: {storedData.premiumInARowCount}/
-            {env.PREMIUM_IN_A_ROW ?? 3}
+        <>
+          <div className="flex h-1/3 flex-col items-center justify-center">
+            <Image
+              className="cursor-pointer rounded"
+              onClick={(e) => {
+                setTimeout(() => {
+                  clearInterval(interval);
+                  getRandomMessage(unseenDemos);
+                  setAnimate(false);
+                }, animationTime);
+                e.preventDefault();
+                const audio = new Audio("/assets/wah_button.mp3");
+                audio.play();
+                setAnimate(true);
+                const interval = setInterval(changeRandomCharImMessage, 10);
+              }}
+              src={
+                animate
+                  ? "/assets/wah_button.gif"
+                  : "/assets/wah_button_frame.gif"
+              }
+              alt="wah logo"
+              width={160}
+              height={160}
+            />
           </div>
-          {storedData.pickedMessage && (
-            <div className="p-5">
-              <Message
-                message={storedData.pickedMessage}
-                isPremium={storedData.pickedMessage.isPremium}
-                showFullLink={true}
-              />
-            </div>
-          )}
-        </div>
+          <div
+            className={`flex h-2/3 items-center justify-center p-5 ${animate ? "blur" : ""}`}
+          >
+            {message && storedData.pickedMessage ? (
+              <div className={`${animate ? "" : "shine"}`}>
+                <Message
+                  message={message}
+                  isPremium={storedData.pickedMessage.isPremium}
+                  showFullLink={true}
+                />
+              </div>
+            ) : (
+              <div className="text-center text-4xl font-bold text-white">
+                Submit your demos on WE ARE HUMANS Discord!
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

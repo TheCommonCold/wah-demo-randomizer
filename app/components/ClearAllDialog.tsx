@@ -1,5 +1,4 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import ConfirmDialog from "./Dialog";
 import { useLocalStorage } from "../context/localStorageContext";
 
@@ -25,7 +24,7 @@ const ClearAllDialog = () => {
       <button
         type="button"
         onClick={openModal}
-        className="bg-red-600 hover:bg-red-500 rounded-md px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+        className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       >
         Clear all seen demos
       </button>

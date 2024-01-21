@@ -40,8 +40,8 @@ const Message: React.FC<{
 
   const attachment = message.attachments[0];
   const audio = attachment?.content_type?.includes("audio") ? (
-    <div className="mt-4 pt-2 border-t-2 border-slate-500">
-      {attachment.filename}
+    <div className="mt-4 border-slate-500 pt-5">
+      {<b>{attachment.filename}</b>}
       <AudioPlayer src={attachment.url} />
     </div>
   ) : null;
@@ -61,7 +61,7 @@ const Message: React.FC<{
 
   return (
     <div
-      className={`w-full max-w-[48rem] relative mb-4 p-4 bg-gray-800 rounded-lg ${message.seen ? "bg-slate-800" : isPremium ? "border-primary border-2 rounded-xl" : "border-slate-700 border-2 rounded-xl"}`}
+      className={`relative w-full max-w-[48rem] rounded-lg bg-gray-800 p-4 ${message.seen ? "opacity-50 grayscale" : isPremium ? "rounded-xl border-2 border-primary" : "rounded-xl border-2 border-slate-700"}`}
     >
       <ConfirmDialog
         isOpen={isOpen}
@@ -70,7 +70,7 @@ const Message: React.FC<{
         innerText={"Are you sure you want to move this demo back to unseen?"}
       />
       {message.seen && (
-        <div className="absolute top-0 right-0 m-2">
+        <div className="absolute right-0 top-0 m-2">
           <button onClick={openModal}>
             <ArrowUturnDownIcon className="h-6 w-6 text-white" />
           </button>
@@ -92,17 +92,15 @@ const Message: React.FC<{
         </span>
 
         <span
-          className={`font-semibold ${message.seen ? "text-slate-600" : isPremium ? "text-primary" : "text-white"}`}
+          className={`font-semibold ${isPremium ? "text-primary" : "text-white"}`}
         >
           {message.author.global_name ?? message.author.username}
         </span>
-        <span
-          className={`text-gray-400 ml-2 ${message.seen ? "text-slate-600" : ""}`}
-        >
+        <span className={`ml-2 text-gray-400`}>
           ({moment(message.timestamp).format("YYYY-MM-DD HH:mm:ss")})
         </span>
       </div>
-      <p className={`mt-2 ${message.seen ? "text-slate-600" : "text-white"}`}>
+      <p className={`mt-2`} style={{ wordBreak: "break-all" }}>
         {formattedMessageText}
       </p>
       {audio}
