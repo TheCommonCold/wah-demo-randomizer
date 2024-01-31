@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
 import { env } from "process";

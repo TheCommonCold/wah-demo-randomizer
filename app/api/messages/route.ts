@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { DiscordMessage, getMessages } from "./client";
 import { NextRequest } from "next/server";
 import { env } from "process";
@@ -7,9 +9,8 @@ export type PremiumAndFreeMessages = {
   premiumDemos: DiscordMessage[];
 };
 
-const dayLimit = env.DAY_LIMIT ? Number(env.DAY_LIMIT) : 1;
-
 export async function GET(_: NextRequest) {
+  const dayLimit = env.DAY_LIMIT ? Number(env.DAY_LIMIT) : 1;
   const freeDemos = await getMessages({
     channel: env.FREE_QUEUE_CHANNEL_ID ?? "",
     dateLimit: new Date(Date.now() - 1000 * 60 * 60 * 24 * dayLimit),

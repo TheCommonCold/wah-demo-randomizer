@@ -77,55 +77,57 @@ const DemoPicker = ({
       : null;
   };
 
+  const noMessages =
+    unseenDemos.premiumDemos.length === 0 && unseenDemos.freeDemos.length === 0;
+
   return (
     <div className="h-[40rem]">
-      {(unseenDemos.premiumDemos.length != 0 ||
-        unseenDemos.freeDemos.length != 0) && (
-        <>
-          <div className="flex h-1/3 flex-col items-center justify-center">
-            <Image
-              className="cursor-pointer rounded"
-              onClick={(e) => {
-                setTimeout(() => {
-                  clearInterval(interval);
-                  getRandomMessage(unseenDemos);
-                  setAnimate(false);
-                }, animationTime);
-                e.preventDefault();
-                const audio = new Audio("/assets/wah_button.mp3");
-                audio.play();
-                setAnimate(true);
-                const interval = setInterval(changeRandomCharImMessage, 10);
-              }}
-              src={
-                animate
-                  ? "/assets/wah_button.gif"
-                  : "/assets/wah_button_frame.gif"
-              }
-              alt="wah logo"
-              width={160}
-              height={160}
+      <div
+        className={`flex h-1/3 flex-col items-center justify-center ${noMessages ? "brightness-75 grayscale filter" : ""}`}
+      >
+        <Image
+          className="cursor-pointer rounded"
+          onClick={(e) => {
+            if (noMessages) {
+              return;
+            }
+
+            setTimeout(() => {
+              clearInterval(interval);
+              getRandomMessage(unseenDemos);
+              setAnimate(false);
+            }, animationTime);
+            e.preventDefault();
+            const audio = new Audio("/assets/wah_button.mp3");
+            audio.play();
+            setAnimate(true);
+            const interval = setInterval(changeRandomCharImMessage, 10);
+          }}
+          src={
+            animate ? "/assets/wah_button.gif" : "/assets/wah_button_frame.gif"
+          }
+          alt="wah logo"
+          width={160}
+          height={160}
+        />
+      </div>
+      <div
+        className={`flex h-2/3 items-center justify-center p-5 ${animate ? "blur" : ""}`}
+      >
+        {message && storedData.pickedMessage ? (
+          <div className={`${animate ? "" : "shine"}`}>
+            <Message
+              message={message}
+              isPremium={storedData.pickedMessage.isPremium}
+              showFullLink={true}
             />
           </div>
-          <div
-            className={`flex h-2/3 items-center justify-center p-5 ${animate ? "blur" : ""}`}
-          >
-            {message && storedData.pickedMessage ? (
-              <div className={`${animate ? "" : "shine"}`}>
-                <Message
-                  message={message}
-                  isPremium={storedData.pickedMessage.isPremium}
-                  showFullLink={true}
-                />
-              </div>
-            ) : (
-              <div className="text-center text-4xl font-bold text-white">
-                Submit your demos on WE ARE HUMANS Discord!
-              </div>
-            )}
+        ) : (
+          <div className="text-center text-4xl font-bold text-white">
+            Submit your demos on WE ARE HUMANS Discord!
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
