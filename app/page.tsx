@@ -21,7 +21,7 @@ function Home() {
 
   if (!discordMessages.data) {
     return (
-      <div className="mt-10 flex flex-col items-center justify-center pt-10">
+      <div className="my-8 flex flex-col items-center justify-center pt-10">
         <Image
           className="rounded py-1"
           src="/assets/wah_button.gif"
@@ -50,7 +50,7 @@ function Home() {
   };
 
   return (
-    <div className="mt-10 flex min-h-screen flex-col items-center justify-center space-y-5 p-5">
+    <div className="my-8 flex min-h-screen flex-col items-center justify-center space-y-5 p-5">
       <DemoPicker unseenDemos={unseenDemos} />
       <div className="pt-5">
         Premium demos in a row: {storedData.premiumInARowCount}/
