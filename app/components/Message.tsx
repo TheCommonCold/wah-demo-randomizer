@@ -2,7 +2,7 @@ import Image from "next/image";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import moment from "moment";
-import { DiscordMessage } from "../api/messages/client";
+import { DiscordMessage } from "../api/client";
 import { ArrowUturnDownIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import ConfirmDialog from "./Dialog";
@@ -11,8 +11,14 @@ import { useLocalStorage } from "../context/localStorageContext";
 const Message: React.FC<{
   message: DiscordMessage;
   isPremium: boolean;
+  summedProbabilities?: number;
   showFullLink?: boolean;
-}> = ({ message, isPremium, showFullLink = false }) => {
+}> = ({
+  message,
+  isPremium,
+  summedProbabilities = null,
+  showFullLink = false,
+}) => {
   const { markSongAsUnseen } = useLocalStorage();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -79,7 +85,6 @@ const Message: React.FC<{
 
       <div className="flex items-center">
         <span>
-          {" "}
           {isPremium ? (
             <Image
               src="/assets/wah_logo.jpg"
@@ -96,6 +101,13 @@ const Message: React.FC<{
         >
           {message.author.global_name ?? message.author.username}
         </span>
+        {summedProbabilities && !message.seen && (
+          <span className={`pl-3 text-xs text-white`}>
+            {Math.round((message.probability / summedProbabilities) * 1000) /
+              10}
+            %
+          </span>
+        )}
         <span className={`ml-2 text-gray-400`}>
           ({moment(message.timestamp).format("YYYY-MM-DD HH:mm:ss")})
         </span>

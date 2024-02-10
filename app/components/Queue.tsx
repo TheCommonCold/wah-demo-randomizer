@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import Messages from "./Messages";
-import { DiscordMessage } from "../api/messages/client";
+import { DiscordMessage } from "../api/client";
 import { useLocalStorage } from "../context/localStorageContext";
+import { randomWithProbabilities } from "../consts";
 
 interface QueueProps {
   messages: DiscordMessage[];
@@ -23,8 +24,9 @@ const Queue = ({ messages, isPremium }: QueueProps) => {
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * filteredMessages.length);
-
+    const randomIndex = randomWithProbabilities(
+      filteredMessages.map((demo) => demo.probability),
+    );
     const newPickedMessage = filteredMessages[randomIndex];
 
     setPickedMessage({
@@ -40,6 +42,12 @@ const Queue = ({ messages, isPremium }: QueueProps) => {
 
     markSongAsSeen(newPickedMessage.id);
   };
+
+  const summedProbabilities = messages.reduce((acc, message) => {
+    if (message.seen) return acc;
+    acc += message.probability;
+    return acc;
+  }, 0);
 
   return (
     <div
@@ -67,7 +75,11 @@ const Queue = ({ messages, isPremium }: QueueProps) => {
           {messages.filter((m) => !m.seen).length}/{messages.length})
         </div>
       </h1>
-      <Messages messages={messages} isPremium={isPremium} />
+      <Messages
+        messages={messages}
+        isPremium={isPremium}
+        summedProbabilities={summedProbabilities}
+      />
     </div>
   );
 };

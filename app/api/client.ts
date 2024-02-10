@@ -6,16 +6,24 @@ import { env } from "process";
 
 const rest = new REST({ version: "10" }).setToken(env.DISCORD_BOT_TOKEN ?? "");
 
+type User = {
+  id: string;
+  username: string;
+  global_name: string;
+  accent_color: string;
+  premium_type: string;
+};
+
+export type UserWithRoles = {
+  roles: string[];
+} & User;
+
 export interface DiscordMessage {
   id: string;
   content: string;
   timestamp: string;
-  author: {
-    username: string;
-    global_name: string;
-    accent_color: string;
-    premium_type: string;
-  };
+  author: User;
+  probability: number;
   seen: boolean;
   attachments: {
     id: string;
@@ -26,6 +34,27 @@ export interface DiscordMessage {
     content_type?: string;
   }[];
 }
+
+export const getMembers = async (guild: string): Promise<UserWithRoles[]> => {
+  let members: UserWithRoles[] = [];
+  let lastMember: UserWithRoles | undefined = undefined;
+  for (;;) {
+    const currMembers = (await rest.get(
+      `${Routes.guildMembers(guild)}?limit=1000${lastMember ? "&after=" + lastMember.id : ""}`,
+    )) as {
+      roles: string[];
+      user: User;
+    }[];
+    members = [
+      ...members,
+      ...currMembers.map((m) => ({ ...m.user, roles: m.roles })),
+    ];
+
+    if (currMembers.length < 1000) return members;
+
+    lastMember = members[members.length - 1];
+  }
+};
 
 export const getMessages = async ({
   channel,

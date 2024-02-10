@@ -1,0 +1,21 @@
+export const dynamic = "force-dynamic";
+
+import { getMembers } from "../client";
+import { NextRequest } from "next/server";
+import { env } from "process";
+
+export type ProbabilitiesMap = Record<string, number>;
+
+export async function GET(_: NextRequest) {
+  const members = await getMembers(env.SERVER_ID ?? "");
+
+  const membersMap = members.reduce((acc, member) => {
+    acc[member.id] = member.roles.length * 0.1;
+
+    return acc;
+  }, {} as ProbabilitiesMap);
+
+  return new Response(JSON.stringify(membersMap), {
+    status: 200,
+  });
+}

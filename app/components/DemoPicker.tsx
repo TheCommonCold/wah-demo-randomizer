@@ -4,6 +4,7 @@ import { PremiumAndFreeMessages } from "../api/messages/route";
 import Message from "./Message";
 import { useLocalStorage } from "../context/localStorageContext";
 import { env } from "process";
+import { randomWithProbabilities } from "../consts";
 
 const DemoPicker = ({
   unseenDemos,
@@ -36,11 +37,10 @@ const DemoPicker = ({
           ? true
           : storedData.premiumInARowCount >=
             (env.PREMIUM_IN_A_ROW ? Number(env.PREMIUM_IN_A_ROW) : 3);
-    const randomIndex = Math.floor(
-      Math.random() *
-        (isItTimeForAFreeDemo
-          ? data.freeDemos.length
-          : data.premiumDemos.length),
+    const randomIndex = randomWithProbabilities(
+      isItTimeForAFreeDemo
+        ? data.freeDemos.map((demo) => demo.probability)
+        : data.premiumDemos.map((demo) => demo.probability),
     );
     const newPickedMessage = isItTimeForAFreeDemo
       ? data.freeDemos[randomIndex]

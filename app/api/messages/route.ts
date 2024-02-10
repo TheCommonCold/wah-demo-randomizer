@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { DiscordMessage, getMessages } from "./client";
+import { DiscordMessage, getMessages } from "../client";
 import { NextRequest } from "next/server";
 import { env } from "process";
 

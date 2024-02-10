@@ -11,15 +11,20 @@ import {
 } from "./context/localStorageContext";
 import DemoPicker from "./components/DemoPicker";
 import { env } from "process";
+import { ProbabilitiesMap } from "./api/probabilities/route";
 
 function Home() {
+  const probabilities = useAxios<ProbabilitiesMap>({
+    url: "/api/probabilities",
+  });
+
   const { storedData } = useLocalStorage();
 
   const discordMessages = useAxios<PremiumAndFreeMessages>({
     url: "/api/messages",
   });
 
-  if (!discordMessages.data) {
+  if (!discordMessages.data || !probabilities.data) {
     return (
       <div className="my-8 flex flex-col items-center justify-center pt-10">
         <Image
@@ -36,13 +41,21 @@ function Home() {
   const parsedDemos = {
     premiumDemos: discordMessages.data.premiumDemos.map((demo) => ({
       ...demo,
+      probability: probabilities.data
+        ? probabilities.data[demo.author.id] + 1
+        : 1,
       seen: storedData.seenDemos[demo.id] ?? false,
     })),
     freeDemos: discordMessages.data.freeDemos.map((demo) => ({
       ...demo,
+      probability: probabilities.data
+        ? probabilities.data[demo.author.id] + 1
+        : 1,
       seen: storedData.seenDemos[demo.id] ?? false,
     })),
   };
+
+  console.log(parsedDemos);
 
   const unseenDemos = {
     premiumDemos: parsedDemos.premiumDemos.filter((demo) => !demo.seen),

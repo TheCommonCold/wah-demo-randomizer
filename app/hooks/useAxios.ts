@@ -16,7 +16,12 @@ interface UseAxiosResult<T> {
 const useAxios = <T>({
   url,
   initialData = null,
-}: UseAxiosProps<T>): UseAxiosResult<T> => {
+  keepUpdating = false,
+}: {
+  url: string;
+  initialData?: T | null;
+  keepUpdating?: boolean;
+}): UseAxiosResult<T> => {
   const [data, setData] = useState<T | null>(initialData);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -35,7 +40,7 @@ const useAxios = <T>({
   useEffect(() => {
     fetchData();
     setInterval(() => {
-      fetchData();
+      if (keepUpdating) fetchData();
     }, 10000);
   }, [fetchData]);
 

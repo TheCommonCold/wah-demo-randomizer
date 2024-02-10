@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { consts } from "../consts";
-import { DiscordMessage } from "../api/messages/client";
+import { DiscordMessage } from "../api/client";
 
 export type SeenDemos = {
   seenDemos: Record<string, boolean>;
