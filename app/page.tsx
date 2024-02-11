@@ -10,15 +10,22 @@ import {
   useLocalStorage,
 } from "./context/localStorageContext";
 import DemoPicker from "./components/DemoPicker";
-import { env } from "process";
 import { ProbabilitiesMap } from "./api/probabilities/route";
+import TextInput from "./components/TextInput";
+import { ConfigProvider, useConfig } from "./context/configContext";
 
 function Home() {
-  const probabilities = useAxios<ProbabilitiesMap>({
-    url: "/api/probabilities",
-  });
-
   const { storedData } = useLocalStorage();
+  const {
+    premiumToFreeRatio,
+    rolesWeight,
+    setPremiumToFreeRatio,
+    setRolesWeight,
+  } = useConfig();
+
+  const probabilities = useAxios<ProbabilitiesMap>({
+    url: `/api/probabilities?weight=${rolesWeight}`,
+  });
 
   const discordMessages = useAxios<PremiumAndFreeMessages>({
     url: "/api/messages",
@@ -55,8 +62,6 @@ function Home() {
     })),
   };
 
-  console.log(parsedDemos);
-
   const unseenDemos = {
     premiumDemos: parsedDemos.premiumDemos.filter((demo) => !demo.seen),
     freeDemos: parsedDemos.freeDemos.filter((demo) => !demo.seen),
@@ -67,10 +72,22 @@ function Home() {
       <DemoPicker unseenDemos={unseenDemos} />
       <div className="pt-5">
         Premium demos in a row: {storedData.premiumInARowCount}/
-        {env.PREMIUM_IN_A_ROW ?? 3}
+        {Number(premiumToFreeRatio)}
       </div>
       <Queues {...parsedDemos} />
       <ClearAllDialog />
+      <div className="flex items-center justify-center space-x-5">
+        <TextInput
+          label="Premium to free ratio"
+          value={premiumToFreeRatio}
+          setInputValue={(value) => setPremiumToFreeRatio(value)}
+        />
+        <TextInput
+          label="Roles weight (%)"
+          value={rolesWeight}
+          setInputValue={(value) => setRolesWeight(value)}
+        />
+      </div>
     </div>
   );
 }
@@ -78,7 +95,9 @@ function Home() {
 export default function Wrapper() {
   return (
     <LocalStorageProvider>
-      <Home />
+      <ConfigProvider>
+        <Home />
+      </ConfigProvider>
     </LocalStorageProvider>
   );
 }

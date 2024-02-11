@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axios, { AxiosResponse } from "axios";
 
-interface UseAxiosProps<T> {
-  url: string;
-  initialData?: T | null;
-}
-
 interface UseAxiosResult<T> {
   data: T | null;
   loading: boolean;

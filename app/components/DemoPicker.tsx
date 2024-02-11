@@ -3,8 +3,8 @@ import Image from "next/image";
 import { PremiumAndFreeMessages } from "../api/messages/route";
 import Message from "./Message";
 import { useLocalStorage } from "../context/localStorageContext";
-import { env } from "process";
 import { randomWithProbabilities } from "../consts";
+import { useConfig } from "../context/configContext";
 
 const DemoPicker = ({
   unseenDemos,
@@ -19,6 +19,8 @@ const DemoPicker = ({
     setPremiumInARowCount,
     setPickedMessage,
   } = useLocalStorage();
+
+  const { premiumToFreeRatio } = useConfig();
 
   const [message, setMessage] = useState(storedData.pickedMessage);
   const [animate, setAnimate] = useState(false);
@@ -35,8 +37,7 @@ const DemoPicker = ({
         ? false
         : data.premiumDemos.length == 0
           ? true
-          : storedData.premiumInARowCount >=
-            (env.PREMIUM_IN_A_ROW ? Number(env.PREMIUM_IN_A_ROW) : 3);
+          : storedData.premiumInARowCount >= Number(premiumToFreeRatio);
     const randomIndex = randomWithProbabilities(
       isItTimeForAFreeDemo
         ? data.freeDemos.map((demo) => demo.probability)

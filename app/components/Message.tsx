@@ -64,7 +64,6 @@ const Message: React.FC<{
     markSongAsUnseen(message.id);
     closeModal();
   };
-
   return (
     <div
       className={`relative w-full max-w-[48rem] rounded-lg bg-gray-800 p-4 ${message.seen ? "opacity-50 grayscale" : isPremium ? "rounded-xl border-2 border-primary" : "rounded-xl border-2 border-slate-700"}`}
@@ -101,13 +100,13 @@ const Message: React.FC<{
         >
           {message.author.global_name ?? message.author.username}
         </span>
-        {summedProbabilities && !message.seen && (
+        {summedProbabilities && !message.seen ? (
           <span className={`pl-3 text-xs text-white`}>
             {Math.round((message.probability / summedProbabilities) * 1000) /
               10}
             %
           </span>
-        )}
+        ) : null}
         <span className={`ml-2 text-gray-400`}>
           ({moment(message.timestamp).format("YYYY-MM-DD HH:mm:ss")})
         </span>
