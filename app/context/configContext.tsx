@@ -25,7 +25,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     env.PREMIUM_IN_A_ROW ?? "3",
   );
 
-  const [rolesWeight, setRolesWeight] = useState(env.ROLES_WEIGHT ?? "20");
+  const [rolesWeight, setRolesWeight] = useState(env.ROLES_WEIGHT ?? "100");
 
   const contextValue: ConfigContextData = {
     premiumToFreeRatio,
