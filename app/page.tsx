@@ -29,6 +29,7 @@ function Home() {
 
   const discordMessages = useAxios<PremiumAndFreeMessages>({
     url: "/api/messages",
+    keepUpdating: true,
   });
 
   if (!discordMessages.data || !probabilities.data) {
