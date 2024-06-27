@@ -13,6 +13,7 @@ import DemoPicker from "./components/DemoPicker";
 import { ProbabilitiesMap } from "./api/probabilities/route";
 import TextInput from "./components/TextInput";
 import { ConfigProvider, useConfig } from "./context/configContext";
+import { DiscordMessage } from "./api/client";
 
 function Home() {
   const { storedData } = useLocalStorage();
@@ -46,21 +47,17 @@ function Home() {
     );
   }
 
+  const parse = (demo: DiscordMessage) => ({
+    ...demo,
+    probability: probabilities.data?.[demo.author.id]
+      ? probabilities.data[demo.author.id] + demo.probability
+      : demo.probability,
+    seen: storedData.seenDemos[demo.id] ?? false,
+  })
+
   const parsedDemos = {
-    premiumDemos: discordMessages.data.premiumDemos.map((demo) => ({
-      ...demo,
-      probability: probabilities.data
-        ? probabilities.data[demo.author.id] + 1
-        : 1,
-      seen: storedData.seenDemos[demo.id] ?? false,
-    })),
-    freeDemos: discordMessages.data.freeDemos.map((demo) => ({
-      ...demo,
-      probability: probabilities.data
-        ? probabilities.data[demo.author.id] + 1
-        : 1,
-      seen: storedData.seenDemos[demo.id] ?? false,
-    })),
+    premiumDemos: discordMessages.data.premiumDemos.map(parse),
+    freeDemos: discordMessages.data.freeDemos.map(parse),
   };
 
   const unseenDemos = {

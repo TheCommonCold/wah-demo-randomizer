@@ -87,7 +87,21 @@ export const getMessages = async ({
     {} as Record<string, DiscordMessage>,
   );
 
-  const result = Object.values(concatenatedMessages);
+  const messageList = Object.values(concatenatedMessages);
+  const minTs = Math.min(
+    ...messageList.map((m) => new Date(m.timestamp).getTime()),
+  );
+  const maxTs = Math.max(
+    ...messageList.map((m) => new Date(m.timestamp).getTime()),
+  );
+  const diff = maxTs - minTs;
+
+  const result = messageList.map((message) => ({
+    ...message,
+    probability:
+      4 * (1.1 - (new Date(message.timestamp).getTime() - minTs) / diff),
+  }));
+
   result.sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
   );

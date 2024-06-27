@@ -37,7 +37,7 @@ const useAxios = <T>({
     setInterval(() => {
       if (keepUpdating) fetchData();
     }, 10000);
-  }, [fetchData]);
+  }, [fetchData, keepUpdating]);
 
   return { data, loading, error, refetch: fetchData };
 };
