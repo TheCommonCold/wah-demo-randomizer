@@ -47,17 +47,29 @@ function Home() {
     );
   }
 
-  const parse = (demo: DiscordMessage) => ({
-    ...demo,
-    probability: probabilities.data?.[demo.author.id]
-      ? probabilities.data[demo.author.id] + demo.probability
-      : demo.probability,
-    seen: storedData.seenDemos[demo.id] ?? false,
-  })
+  const parse = (messages: DiscordMessage[]) => {
+    const minTs = Math.min(
+      ...messages.map((m) => new Date(m.timestamp).getTime()),
+    );
+    const maxTs = Math.max(
+      ...messages.map((m) => new Date(m.timestamp).getTime()),
+    );
+    const diff = maxTs - minTs;
+  
+    const getBaseProbability = (message: DiscordMessage) => 100 * (1.01 - (new Date(message.timestamp).getTime() - minTs) / diff)
+
+    return messages.map((m) => ({
+      ...m,
+      probability: probabilities.data?.[m.author.id]
+        ? probabilities.data[m.author.id] + getBaseProbability(m)
+        : getBaseProbability(m),
+      seen: storedData.seenDemos[m.id] ?? false,
+    }))
+  }
 
   const parsedDemos = {
-    premiumDemos: discordMessages.data.premiumDemos.map(parse),
-    freeDemos: discordMessages.data.freeDemos.map(parse),
+    premiumDemos: parse(discordMessages.data.premiumDemos),
+    freeDemos: parse(discordMessages.data.freeDemos),
   };
 
   const unseenDemos = {
