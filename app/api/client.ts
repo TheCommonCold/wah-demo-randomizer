@@ -76,6 +76,7 @@ export const getMessages = async ({
       if (acc[message.author.username]) {
         acc[message.author.username] = {
           ...acc[message.author.username],
+          timestamp: message.timestamp,
           content:
             acc[message.author.username].content + "\n" + message.content,
         };

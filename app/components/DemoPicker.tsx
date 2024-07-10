@@ -5,6 +5,7 @@ import Message from "./Message";
 import { useLocalStorage } from "../context/localStorageContext";
 import { randomWithProbabilities } from "../consts";
 import { useConfig } from "../context/configContext";
+import { isItTimeForAFreeDemoYet } from "../helpers";
 
 const DemoPicker = ({
   unseenDemos,
@@ -32,12 +33,13 @@ const DemoPicker = ({
   }, [storedData.pickedMessage]);
 
   const getRandomMessage = (data: PremiumAndFreeMessages) => {
-    const isItTimeForAFreeDemo =
-      data.freeDemos.length == 0
-        ? false
-        : data.premiumDemos.length == 0
-          ? true
-          : storedData.premiumInARowCount >= Number(premiumToFreeRatio);
+    const isItTimeForAFreeDemo = isItTimeForAFreeDemoYet({
+      freeDemosLength: data.freeDemos.length,
+      premiumDemosLength: data.premiumDemos.length,
+      premiumInARowCount: storedData.premiumInARowCount,
+      premiumToFreeRatio: Number(premiumToFreeRatio),
+    });
+
     const randomIndex = randomWithProbabilities(
       isItTimeForAFreeDemo
         ? data.freeDemos.map((demo) => demo.probability)

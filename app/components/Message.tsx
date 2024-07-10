@@ -40,7 +40,7 @@ const Message: React.FC<{
         </a>
       );
     } else {
-      return <span key={index}>{part}</span>;
+      return showFullLink ? <span key={index}>{part}</span> : null;
     }
   });
 

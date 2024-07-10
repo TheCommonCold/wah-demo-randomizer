@@ -14,6 +14,7 @@ import { ProbabilitiesMap } from "./api/probabilities/route";
 import TextInput from "./components/TextInput";
 import { ConfigProvider, useConfig } from "./context/configContext";
 import { DiscordMessage } from "./api/client";
+import { isItTimeForAFreeDemoYet } from "./helpers";
 
 function Home() {
   const { storedData } = useLocalStorage();
@@ -55,8 +56,9 @@ function Home() {
       ...messages.map((m) => new Date(m.timestamp).getTime()),
     );
     const diff = maxTs - minTs;
-  
-    const getBaseProbability = (message: DiscordMessage) => 100 * (1.01 - (new Date(message.timestamp).getTime() - minTs) / diff)
+
+    const getBaseProbability = (message: DiscordMessage) =>
+      100 * (1.01 - (new Date(message.timestamp).getTime() - minTs) / diff);
 
     return messages.map((m) => ({
       ...m,
@@ -64,8 +66,8 @@ function Home() {
         ? probabilities.data[m.author.id] + getBaseProbability(m)
         : getBaseProbability(m),
       seen: storedData.seenDemos[m.id] ?? false,
-    }))
-  }
+    }));
+  };
 
   const parsedDemos = {
     premiumDemos: parse(discordMessages.data.premiumDemos),
@@ -77,12 +79,26 @@ function Home() {
     freeDemos: parsedDemos.freeDemos.filter((demo) => !demo.seen),
   };
 
+  const isItTimeForAFreeDemo = isItTimeForAFreeDemoYet({
+    freeDemosLength: unseenDemos.freeDemos.length,
+    premiumDemosLength: unseenDemos.premiumDemos.length,
+    premiumInARowCount: storedData.premiumInARowCount,
+    premiumToFreeRatio: Number(premiumToFreeRatio),
+  });
+
   return (
     <div className="my-8 flex min-h-screen flex-col items-center justify-center space-y-5 p-5">
       <DemoPicker unseenDemos={unseenDemos} />
       <div className="pt-5">
-        Premium demos in a row: {storedData.premiumInARowCount}/
-        {Number(premiumToFreeRatio)}
+        The next demo will be picked from the{" "}
+        <b
+          className={`font-semibold ${isItTimeForAFreeDemo ? "text-white" : "text-primary"}`}
+        >
+          {isItTimeForAFreeDemo ? "free" : "premium"}
+        </b>
+        {!isItTimeForAFreeDemo &&
+          ` (${Number(premiumToFreeRatio) - storedData.premiumInARowCount}/${Number(premiumToFreeRatio)}) `}
+        queue.
       </div>
       <Queues {...parsedDemos} />
       <ClearAllDialog />
